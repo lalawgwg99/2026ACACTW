@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description"
+        content="2026 台灣冷氣銷售戰情室 - 專為家電銷售人員設計的視覺化輔銷工具。整合 Daikin, Hitachi, Panasonic 等六大品牌最新機型規格、銷售話術與競品分析。" />
+    <meta name="keywords" content="冷氣銷售, 2026冷氣推薦, 大金橫綱Z, 日立凍結洗淨, Panasonic UX, 銷售話術, 家電教育訓練" />
+    <meta property="og:title" content="2026 冷氣銷售戰情室｜Visual Sales Pad" />
+    <meta property="og:description" content="最新 2026 機種規格比較、銷售話術與 AI 風險檢測工具。" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="ac_product.png" />
+    <title>2026 冷氣銷售戰情室｜專業版 Sales Pro</title>
+
+    <!-- Tailwind & Alpine -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Sans+TC:wght@400;500;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Structured Data (JSON-LD) for SEO -->
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "2026 冷氣銷售戰情室",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Web",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "TWD"
+  },
+  "description": "專為台灣家電銷售員設計的 AI 輔助銷售工具，包含六大品牌 2026 最新規格與話術資料庫。"
+}
+</script>
+
+    <style>
+        body {
+            background-color: #050505;
+            color: #E2E8F0;
+            font-family: 'Noto Sans TC', 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Card Styling */
+        .card {
+            background: #111111;
+            border: 1px solid #222;
+            border-radius: 12px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+        }
+
+        .card:hover {
+            border-color: #444;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Navigation Buttons */
+        .nav-btn {
+            padding: 12px 16px;
+            border-radius: 8px;
+            color: #888;
+            font-weight: 500;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-btn:hover {
+            background: #222;
+            color: #FFF;
+        }
+
+        .nav-btn.active {
+            background: #2563EB;
+            color: white;
+            box-shadow: 0 0 15px rgba(37, 99, 235, 0.4);
+        }
+
+        /* Utilities */
+        .glass-panel {
+            background: rgba(20, 20, 20, 0.85);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .badge {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: bold;
+            border: 1px solid transparent;
+        }
+    </style>
+</head>
+
+<body x-data="app()" class="min-h-screen pb-24 selection:bg-blue-500 selection:text-white">
+
+    <!-- Header -->
+    <header class="fixed top-0 w-full glass-panel z-50 transition-all duration-300">
+        <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div
+                    class="w-8 h-8 rounded bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center text-white font-bold text-xs shadow-lg shadow-blue-900/50">
+                    Pro</div>
+                <div>
+                    <h1 class="font-bold text-lg tracking-tight text-white leading-none">2026 冷氣銷售戰情室</h1>
+                    <p class="text-[10px] text-gray-400 font-mono tracking-wider mt-0.5">Website Pro v4.0</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                <span class="text-xs text-gray-400 font-mono">Data Verified</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Bottom Navigation -->
+    <nav class="fixed bottom-0 w-full bg-[#0a0a0a] border-t border-[#222] z-50 pb-safe shadow-2xl">
+        <div class="max-w-5xl mx-auto flex justify-around p-2">
+            <button class="nav-btn w-full justify-center flex-col gap-1 text-[10px]" :class="{active:tab==='catalog'}"
+                @click="tab='catalog'">
+                <span class="text-lg">🛒</span> 2026型錄
+            </button>
+            <button class="nav-btn w-full justify-center flex-col gap-1 text-[10px]" :class="{active:tab==='compare'}"
+                @click="tab='compare'">
+                <span class="text-lg">⚖️</span> 專業PK
+            </button>
+            <button class="nav-btn w-full justify-center flex-col gap-1 text-[10px]" :class="{active:tab==='matcher'}"
+                @click="tab='matcher'">
+                <span class="text-lg">🎯</span> 智能配對
+            </button>
+            <button class="nav-btn w-full justify-center flex-col gap-1 text-[10px]" :class="{active:tab==='pitch'}"
+                @click="tab='pitch'">
+                <span class="text-lg">💬</span> 銷售金句
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="max-w-5xl mx-auto pt-24 px-4 space-y-12">
+
+        <!-- 1️⃣ 2026 Visual Catalog -->
+        <section x-show="tab === 'catalog'" x-transition class="animate-fade-in">
+            <header class="flex flex-col md:flex-row justify-between items-end mb-8 gap-4">
+                <div>
+                    <h2 class="text-3xl font-extrabold text-white tracking-tight">2026 年度旗艦鑑賞</h2>
+                    <p class="text-sm text-gray-400 mt-2">收錄 2026 最新橫綱 Z、凍結洗淨 3.0+ 等旗艦機種規格。</p>
+                </div>
+                <div class="relative">
+                    <select x-model="brandFilter"
+                        class="appearance-none bg-[#111] text-sm text-white pl-4 pr-10 py-2.5 rounded-lg border border-[#333] hover:border-[#555] focus:border-blue-500 outline-none transition-colors w-full md:w-auto">
+                        <option value="all">全品牌展示</option>
+                        <template x-for="b in brands" :key="b.id">
+                            <option :value="b.id" x-text="b.name"></option>
+                        </template>
+                    </select>
+                    <div class="absolute right-3 top-3 pointer-events-none text-gray-500">▼</div>
+                </div>
+            </header>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <template x-for="b in filteredBrands">
+                    <article
+                        class="card overflow-hidden group hover:border-blue-500/40 transition-all duration-300 flex flex-col h-full">
+                        <!-- Image -->
+                        <div class="h-52 bg-gray-900 relative overflow-hidden">
+                            <img :src="b.type === 'tech' ? 'ac_tech.png' : 'ac_product.png'"
+                                :alt="b.name + ' ' + b.model"
+                                class="w-full h-full object-cover opacity-90 group-hover:scale-105 group-hover:opacity-100 transition-all duration-700 ease-out" />
+
+                            <!-- Origin Badge -->
+                            <div class="absolute top-3 left-3 flex gap-2">
+                                <span class="badge bg-black/70 backdrop-blur text-white border-white/10"
+                                    x-text="b.origin"></span>
+                                <span x-show="b.new"
+                                    class="badge bg-blue-600 text-white border-blue-400 shadow-lg shadow-blue-900/50">2026
+                                    NEW</span>
+                            </div>
+
+                            <!-- Title Overlay -->
+                            <div
+                                class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black via-black/80 to-transparent p-4">
+                                <div class="flex justify-between items-end">
+                                    <div>
+                                        <h3 class="text-white font-bold text-xl drop-shadow-md leading-tight"
+                                            x-text="b.name"></h3>
+                                        <p class="text-gray-400 text-xs font-mono mt-1" x-text="b.model"></p>
+                                    </div>
+                                    <div class="text-right">
+                                        <span class="text-blue-400 font-bold text-sm" x-text="b.kw_range"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Content -->
+                        <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
+                            <div>
+                                <p class="text-xs text-blue-300 font-bold uppercase tracking-wider mb-2"
+                                    x-text="b.slogan"></p>
+
+                                <!-- Key Specs Grid -->
+                                <div class="grid grid-cols-2 gap-2 mb-4">
+                                    <div class="bg-[#1a1a1a] p-2 rounded border border-[#222]">
+                                        <span class="text-[10px] text-gray-500 block">核心技術</span>
+                                        <span class="text-xs text-gray-200 font-medium" x-text="b.tech_core"></span>
+                                    </div>
+                                    <div class="bg-[#1a1a1a] p-2 rounded border border-[#222]">
+                                        <span class="text-[10px] text-gray-500 block">CSPF 能效</span>
+                                        <span class="text-xs text-gray-200 font-medium" x-text="b.cspf_rating"></span>
+                                    </div>
+                                </div>
+
+                                <ul class="space-y-1.5 list-none">
+                                    <template x-for="f in b.features">
+                                        <li class="text-xs text-gray-400 flex items-start gap-2">
+                                            <span class="text-blue-500 mt-0.5">✓</span>
+                                            <span x-text="f"></span>
+                                        </li>
+                                    </template>
+                                </ul>
+                            </div>
+
+                            <!-- Action -->
+                            <div class="grid grid-cols-2 gap-3 mt-4">
+                                <a :href="b.catalog_url" target="_blank" rel="noopener noreferrer"
+                                    class="bg-[#1a1a1a] hover:bg-[#222] border border-[#333] hover:border-[#555] text-gray-300 text-xs py-2.5 rounded-lg font-medium transition-all active:scale-95 flex items-center justify-center gap-1.5 hover:text-white">
+                                    <span>📥</span> 官方型錄
+                                </a>
+                                <button @click="copyCatalog(b)"
+                                    class="bg-blue-600 hover:bg-blue-500 text-white text-xs py-2.5 rounded-lg font-bold transition-all active:scale-95 flex items-center justify-center gap-1.5 shadow-lg shadow-blue-900/30">
+                                    <span>📋</span> 複製文案
+                                </button>
+                            </div>
+                        </div>
+                    </article>
+                </template>
+            </div>
+        </section>
+
+        <!-- 2️⃣ Professional Comparison -->
+        <section x-show="tab === 'compare'" x-transition>
+            <div class="mb-6">
+                <h2 class="text-3xl font-bold text-white">規格戰情室</h2>
+                <p class="text-sm text-gray-400 mt-1">六大品牌 2026 主力旗艦橫向測評</p>
+            </div>
+
+            <div class="overflow-hidden rounded-xl border border-[#333] shadow-2xl bg-[#0a0a0a]">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse min-w-[800px]">
+                        <thead>
+                            <tr class="bg-[#111]">
+                                <th
+                                    class="p-4 border-b border-[#333] text-gray-500 text-xs font-bold uppercase sticky left-0 bg-[#111] z-10 w-32 shadow-r">
+                                    品牌 / 系列</th>
+                                <th class="p-4 border-b border-[#333] text-gray-300 text-sm font-bold">2026 核心技術</th>
+                                <th class="p-4 border-b border-[#333] text-gray-300 text-sm font-bold">清潔/抑菌</th>
+                                <th class="p-4 border-b border-[#333] text-gray-300 text-sm font-bold">智慧/舒適</th>
+                                <th class="p-4 border-b border-[#333] text-gray-300 text-sm font-bold">產地/特色</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-[#222]">
+                            <template x-for="b in brands" :key="b.id">
+                                <tr class="group hover:bg-[#161616] transition-colors">
+                                    <td
+                                        class="p-4 font-bold text-white sticky left-0 bg-[#0a0a0a] group-hover:bg-[#161616] transition-colors border-r border-[#222]">
+                                        <div class="flex flex-col">
+                                            <span class="text-base" x-text="b.name"></span>
+                                            <span class="text-[10px] text-gray-500 font-mono mt-0.5"
+                                                x-text="b.model"></span>
+                                        </div>
+                                    </td>
+                                    <td class="p-4 align-top">
+                                        <span class="text-blue-400 font-bold text-sm block mb-1"
+                                            x-text="b.tech_core"></span>
+                                        <p class="text-xs text-gray-500 leading-relaxed" x-text="b.tech_desc"></p>
+                                    </td>
+                                    <td class="p-4 align-top text-sm text-gray-300">
+                                        <div class="flex items-center gap-1.5">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                                            <span x-text="b.clean_tech"></span>
+                                        </div>
+                                    </td>
+                                    <td class="p-4 align-top text-sm text-gray-300" x-text="b.smart_feature"></td>
+                                    <td class="p-4 align-top">
+                                        <span class="badge border-gray-600 text-gray-400" x-text="b.origin"></span>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="mt-4 flex gap-2 items-center text-xs text-gray-500 bg-[#111] p-3 rounded border border-[#222]">
+                <span>💡</span>
+                <span>截圖技巧：手機橫放可截取完整圖表，發送給客戶展現您的專業分析能力。</span>
+            </div>
+        </section>
+
+        <!-- 3️⃣ Smart Matcher -->
+        <section x-show="tab === 'matcher'" x-transition>
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold text-white mb-2">AI 智慧選購嚮導</h2>
+                <p class="text-gray-400 text-sm">輸入客戶需求，3秒生成「共贏」提案</p>
+            </div>
+
+            <div class="max-w-2xl mx-auto">
+                <!-- Step 1 -->
+                <div x-show="step === 1" class="space-y-6 animate-fade-in-up">
+                    <h3 class="text-xl font-bold text-blue-300 flex items-center gap-2">
+                        <span
+                            class="bg-blue-900/50 text-blue-300 w-8 h-8 rounded-full flex items-center justify-center text-sm border border-blue-500/30">1</span>
+                        客戶的核心痛點是？
+                    </h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <button @click="setAnswer('concern', 'comfort')"
+                            class="card p-5 hover:border-blue-500 text-left group">
+                            <span class="text-2xl mb-2 block group-hover:scale-110 transition-transform">😌</span>
+                            <span class="font-bold text-white block">又吵又冷 / 怕冷氣病</span>
+                            <span class="text-xs text-gray-500 mt-1 block">家有嬰兒、長輩、淺眠者</span>
+                        </button>
+                        <button @click="setAnswer('concern', 'clean')"
+                            class="card p-5 hover:border-green-500 text-left group">
+                            <span class="text-2xl mb-2 block group-hover:scale-110 transition-transform">🤧</span>
+                            <span class="font-bold text-white block">過敏 / 會有霉味</span>
+                            <span class="text-xs text-gray-500 mt-1 block">鼻子過敏、不想常洗冷氣</span>
+                        </button>
+                        <button @click="setAnswer('concern', 'save')"
+                            class="card p-5 hover:border-yellow-500 text-left group">
+                            <span class="text-2xl mb-2 block group-hover:scale-110 transition-transform">⚡</span>
+                            <span class="font-bold text-white block">電費太貴 / 預算精算</span>
+                            <span class="text-xs text-gray-500 mt-1 block">長時間開機、房東、營業</span>
+                        </button>
+                        <button @click="setAnswer('concern', 'smart')"
+                            class="card p-5 hover:border-purple-500 text-left group">
+                            <span class="text-2xl mb-2 block group-hover:scale-110 transition-transform">📱</span>
+                            <span class="font-bold text-white block">智能控制 / 科技宅</span>
+                            <span class="text-xs text-gray-500 mt-1 block">喜歡用手機操作、IoT</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div x-show="step === 2" class="space-y-6 animate-fade-in-up">
+                    <h3 class="text-xl font-bold text-blue-300 flex items-center gap-2">
+                        <span
+                            class="bg-blue-900/50 text-blue-300 w-8 h-8 rounded-full flex items-center justify-center text-sm border border-blue-500/30">2</span>
+                        安裝環境條件？
+                    </h3>
+                    <div class="grid grid-cols-1 gap-4">
+                        <button @click="setAnswer('env', 'normal'); matchResult()"
+                            class="card p-5 hover:border-gray-500 text-left flex items-center justify-between group">
+                            <div>
+                                <span class="font-bold text-white block">一般標準臥室/客廳</span>
+                                <span class="text-xs text-gray-500">無西曬、頂樓、沼氣等特殊狀況</span>
+                            </div>
+                            <span class="text-2xl group-hover:translate-x-1 transition-transform">🏠</span>
+                        </button>
+                        <button @click="setAnswer('env', 'harsh'); matchResult()"
+                            class="card p-5 hover:border-red-500 text-left flex items-center justify-between group">
+                            <div>
+                                <span class="font-bold text-white block">惡劣環境 (沼氣/海邊/挑高)</span>
+                                <span class="text-xs text-gray-500">有水溝味、溫泉區、濾網難拆</span>
+                            </div>
+                            <span class="text-2xl group-hover:translate-x-1 transition-transform">⚠️</span>
+                        </button>
+                    </div>
+                    <button @click="step=1"
+                        class="text-gray-500 text-sm hover:text-white underline decoration-gray-700">← 返回上一題</button>
+                </div>
+
+                <!-- Result -->
+                <div x-show="step === 3" class="animate-fade-in">
+                    <div
+                        class="card bg-gradient-to-br from-[#111] to-[#0a0a0a] border-blue-500/30 relative overflow-hidden">
+                        <div
+                            class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-blue-500">
+                        </div>
+
+                        <div class="p-8 text-center">
+                            <span
+                                class="inline-block px-3 py-1 rounded-full bg-blue-900/30 text-blue-300 text-xs font-bold mb-4 border border-blue-500/20">AI
+                                最佳共贏推薦</span>
+                            <h3 class="text-4xl font-extrabold text-white mb-2 tracking-tight"
+                                x-text="recommendation.brand.name"></h3>
+                            <p class="text-gray-400 text-sm font-mono mb-6" x-text="recommendation.brand.model"></p>
+
+                            <div class="text-left bg-[#161616] rounded-xl p-6 border border-[#222] mb-6 space-y-4">
+                                <div>
+                                    <h4 class="text-blue-400 font-bold text-sm mb-1">🎯 推薦理由 (給客戶聽)</h4>
+                                    <p class="text-gray-300 text-sm leading-relaxed"
+                                        x-text="recommendation.reason_cust"></p>
+                                </div>
+                                <div class="border-t border-[#333] pt-4">
+                                    <h4 class="text-green-400 font-bold text-sm mb-1">💼 銷售優勢 (給你看)</h4>
+                                    <p class="text-gray-300 text-sm leading-relaxed"
+                                        x-text="recommendation.reason_sales"></p>
+                                </div>
+                            </div>
+
+                            <div class="flex gap-4 justify-center">
+                                <button @click="step=1"
+                                    class="px-6 py-2.5 rounded-lg border border-[#333] text-gray-400 hover:text-white hover:bg-[#222] transition-colors text-sm">重選</button>
+                                <button @click="copyMatch()"
+                                    class="px-6 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-bold shadow-lg shadow-blue-900/30 transition-all text-sm flex items-center gap-2">
+                                    <span>💬</span> 複製推薦文案
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4️⃣ Sales Pitch (Scripts) -->
+        <section x-show="tab === 'pitch'" x-transition>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 h-[calc(100vh-200px)]">
+                <!-- Sidebar -->
+                <div class="md:col-span-1 border-r border-[#222] pr-4 space-y-2 overflow-y-auto">
+                    <template x-for="b in brands" :key="b.id">
+                        <button @click="pitchBrand = b.id"
+                            class="w-full text-left p-4 rounded-xl border transition-all flex justify-between items-center group"
+                            :class="pitchBrand === b.id ? 'bg-blue-900/10 border-blue-500/40' : 'bg-[#111] border-[#222] hover:bg-[#161616]'">
+                            <div>
+                                <span class="block font-bold text-sm"
+                                    :class="pitchBrand === b.id ? 'text-blue-400' : 'text-gray-300'"
+                                    x-text="b.name"></span>
+                                <span class="text-[10px] text-gray-500" x-text="b.slogan"></span>
+                            </div>
+                            <span class="text-gray-600 group-hover:text-gray-400" x-show="pitchBrand !== b.id">›</span>
+                        </button>
+                    </template>
+                </div>
+
+                <!-- Content -->
+                <div class="md:col-span-2 overflow-y-auto pb-20">
+                    <template x-for="b in brands" :key="b.id">
+                        <div x-show="pitchBrand === b.id" x-transition.opacity.duration.300ms class="space-y-4">
+
+                            <!-- Safe Intro -->
+                            <div class="card p-6 border-l-4 border-l-green-500 relative group cursor-pointer hover:bg-[#161616]"
+                                @click="copyText(b.scripts.intro)">
+                                <div class="flex justify-between items-start mb-2">
+                                    <span
+                                        class="bg-green-900/30 text-green-400 text-[10px] px-2 py-0.5 rounded border border-green-500/20 font-bold">安全開場
+                                        Safe</span>
+                                    <span class="text-[10px] text-gray-600 group-hover:text-gray-400">點擊複製</span>
+                                </div>
+                                <p class="text-gray-300 text-sm leading-relaxed" x-text="b.scripts.intro"></p>
+                            </div>
+
+                            <!-- Value Defense -->
+                            <div class="card p-6 border-l-4 border-l-yellow-500 relative group cursor-pointer hover:bg-[#161616]"
+                                @click="copyText(b.scripts.value)">
+                                <div class="flex justify-between items-start mb-2">
+                                    <span
+                                        class="bg-yellow-900/30 text-yellow-400 text-[10px] px-2 py-0.5 rounded border border-yellow-500/20 font-bold">價值防禦
+                                        Value</span>
+                                    <span class="text-[10px] text-gray-600 group-hover:text-gray-400">點擊複製</span>
+                                </div>
+                                <p class="text-gray-300 text-sm leading-relaxed" x-text="b.scripts.value"></p>
+                            </div>
+
+                            <!-- Red Flags -->
+                            <div class="card p-6 border-l-4 border-l-red-500 bg-red-900/5">
+                                <span
+                                    class="bg-red-900/30 text-red-400 text-[10px] px-2 py-0.5 rounded border border-red-500/20 font-bold mb-3 inline-block">⚠️
+                                    絕對禁語 Warning</span>
+                                <ul class="space-y-2">
+                                    <template x-for="w in b.warnings">
+                                        <li class="flex gap-2 text-sm text-gray-400 opacity-90">
+                                            <span class="text-red-500 font-bold">✕</span>
+                                            <span class="decoration-red-800 line-through text-gray-500"
+                                                x-text="w"></span>
+                                        </li>
+                                    </template>
+                                </ul>
+                            </div>
+
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </section>
+
+        <!-- Toast Notification -->
+        <div x-show="toastShow" x-transition.enter="transform ease-out duration-300 transition-translate-y"
+            x-transition.enter-start="translate-y-10 opacity-0" x-transition.enter-end="translate-y-0 opacity-100"
+            class="fixed bottom-24 left-1/2 transform -translate-x-1/2 bg-[#222] border border-[#333] text-white px-5 py-3 rounded-xl shadow-2xl z-[100] flex items-center gap-3">
+            <div class="bg-green-500 rounded-full p-1">
+                <svg class="w-3 h-3 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                </svg>
+            </div>
+            <span x-text="toastMsg" class="text-sm font-medium"></span>
+        </div>
+
+    </main>
+
+    <script>
+        function app() {
+            return {
+                tab: 'catalog',
+                step: 1,
+                brandFilter: 'all',
+                pitchBrand: 'daikin',
+                toastShow: false,
+                toastMsg: '',
+                answers: { concern: '', env: '' },
+                recommendation: null,
+
+                get filteredBrands() {
+                    if (this.brandFilter === 'all') return this.brands;
+                    return this.brands.filter(b => b.id === this.brandFilter);
+                },
+
+                setAnswer(key, val) {
+                    this.answers[key] = val;
+                    if (key === 'concern') this.step = 2;
+                },
+
+                matchResult() {
+                    const { concern, env } = this.answers;
+                    let recId = 'daikin'; // default
+
+                    // Logic based on verified research
+                    if (env === 'harsh') recId = 'heran'; // Biogas
+                    else if (concern === 'budget') recId = 'heran';
+                    else if (concern === 'clean' || env === 'harsh') recId = 'hitachi'; // Frost wash is good for clean, Fujitsu for hard to access
+                    if (env === 'harsh' && concern !== 'budget') recId = 'fujitsu'; // Auto filter clean for difficult access
+
+                    if (concern === 'comfort') recId = 'daikin';
+                    if (concern === 'save') recId = 'panasonic';
+                    if (concern === 'smart') recId = 'lg';
+
+                    // Find brand data
+                    const b = this.brands.find(x => x.id === recId);
+
+                    // Generate Dynamic Reasons
+                    const salesReasons = {
+                        'daikin': '高單價、安裝品質要求高(減少後續麻煩)、品牌指名度高成交快。',
+                        'hitachi': 'MIT品牌信任度高，凍結洗淨演示效果好，長輩接受度第一。',
+                        'panasonic': '省電數據第一，用數據說話最容易說服精算型客人。',
+                        'fujitsu': '獨家自動掃濾網，解決挑高或懶得洗的痛點，無替代性。',
+                        'lg': 'CP值高(WiFi內建)，外型差異化大，年輕客群成交率高。',
+                        'heran': '便宜且有沼氣防護，出租房或惡劣環境的首選，減少環境因素客訴。'
+                    };
+
+                    const custReasons = {
+                        'daikin': '獨家 Hybrid Cooling 溫濕雙控，不只冷更不乾，給家人最舒服的體感。',
+                        'hitachi': '凍結洗淨 3.0+ 會自己洗澡的冷氣，省去請人洗冷氣的麻煩與費用。',
+                        'panasonic': '超越 2025 一級能效標準，越吹越省錢，還有 nanoe X 淨化空氣。',
+                        'fujitsu': '唯一濾網會自動掃地，不用爬高拆濾網，永遠保持省電與乾淨。',
+                        'lg': '內建 WiFi 與雙迴轉變頻，回家前手機先開好，安靜又省電。',
+                        'heran': '專利沼氣防護塗層，特別耐用，適合台灣潮濕或有沼氣的環境。'
+                    };
+
+                    this.recommendation = {
+                        brand: b,
+                        reason_cust: custReasons[recId],
+                        reason_sales: salesReasons[recId]
+                    };
+                    this.step = 3;
+                },
+
+                brands: [
+                    {
+                        id: 'daikin', name: '大金 DAIKIN', model: '橫綱 Z 系列 (2026)', origin: '泰國 (日本研發)',
+                        slogan: '買大金 買安心', new: true, type: 'product',
+                        kw_range: '2.2kW ~ 9.0kW', cspf_rating: '超越一級',
+                        tech_core: 'Hybrid Cooling 溫濕雙控',
+                        tech_desc: '獨家雙控技術，除濕不降溫，體感最舒適。',
+                        clean_tech: '閃流放電 (分解病毒)', smart_feature: 'App內建 (需選配)',
+                        features: ['閃流放電主動除菌', '專利搖擺式壓縮機', '防霉運轉'],
+                        scripts: {
+                            intro: '這台是我們賣最好的大金橫綱系列，今年最新的。它最大特色是「溫濕雙控」，不只會冷，還會控制濕度，不會讓你覺得冷氣吹久了皮膚乾乾癢癢的。',
+                            value: '雖然價格高一點，但它是用專利的搖擺式壓縮機，非常安靜耐用。冷氣一吹十年，平均一天多幾塊錢，換來這種像自然風的舒適感，絕對值得。'
+                        },
+                        warnings: ['保證完全無聲 (仍有風聲)', '不用買清淨機 (功能不同)'],
+                        catalog_url: 'https://www.daikintaiwan.com/product_catalog.shtml'
+                    },
+                    {
+                        id: 'hitachi', name: '日立 HITACHI', model: '尊榮 / 頂級系列 (2026)', origin: '台灣 (MIT)',
+                        slogan: '珍愛台灣 凍結洗淨', new: true, type: 'product',
+                        kw_range: '2.2kW ~ 14.0kW', cspf_rating: '一級能效',
+                        tech_core: '凍結洗淨 3.0+',
+                        tech_desc: '急速結冰帶走髒污，熱風乾燥防霉。',
+                        clean_tech: '凍結洗淨 (水洗+烘乾)', smart_feature: '體感舒適科技',
+                        features: ['凍結洗淨 3.0+', '日本製壓縮機(部分)', '露水盤銀離子'],
+                        scripts: {
+                            intro: '日立最新的「凍結洗淨 3.0+」很厲害，冷氣自己會定期「結冰」再「解凍」，把裡面的灰塵沖出來，最後還會加熱烘乾。',
+                            value: '一般冷氣用久了會臭就是因為裡面發霉。日立這台會自己洗澡，您可以省下很多以後請人洗冷氣的錢，空氣也比較乾淨。'
+                        },
+                        warnings: ['永遠不用找人洗 (仍需深層保養)', '全機日本製造 (部分MIT)'],
+                        catalog_url: 'https://www.hitachi-homeappliances.com.tw/service/catalog.aspx'
+                    },
+                    {
+                        id: 'panasonic', name: 'Panasonic', model: 'UX / VX 系列 (2026)', origin: '台灣 (MIT)',
+                        slogan: 'Smart App 史上最省電', new: true, type: 'tech',
+                        kw_range: '2.2kW ~ 11.0kW', cspf_rating: '超越標準 168%',
+                        tech_core: 'nanoe™ X 48兆',
+                        tech_desc: '釋放48兆氫氧離子，主動抑制病毒。',
+                        clean_tech: 'nanoe™ X (主動抑菌)', smart_feature: 'IoT 智慧家電整合',
+                        features: ['nanoe X 48兆抑菌', '24H 防霉監控', '乾燥防霉'],
+                        scripts: {
+                            intro: '如果您在意電費，Panasonic 這台 UX 系列是目前「史上最省電」的，CSPF 值超越國家標準很多。而且開冷氣同時就在殺菌。',
+                            value: '它有 nanoe X 科技，經實驗證實可以抑制新冠病毒跟流感。買一台冷氣等於多賺到一台高階空氣清淨機。'
+                        },
+                        warnings: ['可以殺死所有病毒 (僅抑制)', '保證家裡沒味道 (視環境)'],
+                        catalog_url: 'https://www.panasonic.com/tw/support/download-search.html'
+                    },
+                    {
+                        id: 'fujitsu', name: '富士通 FUJITSU', model: 'nocria Z 系列', origin: '泰國',
+                        slogan: '技術職人 自動掃地', new: false, type: 'product',
+                        kw_range: '2.2kW ~ 9.0kW', cspf_rating: '一級能效',
+                        tech_core: '自動清潔濾網',
+                        tech_desc: '內建機械手臂，定時掃除濾網灰塵。',
+                        clean_tech: '自動掃濾網+熱交換', smart_feature: '0.5度精準控溫',
+                        features: ['自動清潔濾網', '熱交換器加熱除菌', '機板矽膠塗層'],
+                        scripts: {
+                            intro: '家裡天花板比較高嗎？這台富士通是唯一「濾網會自動掃地」的，您不用每次都要拿梯子爬高拆濾網，它自己會清得乾乾淨淨。',
+                            value: '濾網乾淨，冷氣就省電。這台雖然沒什麼廣告，但全機 10 年保固，連機板都有塗膠防護，是內行人才知道的耐用好貨。'
+                        },
+                        warnings: ['完全不用保養 (集塵盒仍需倒)', '永遠不用管它'],
+                        catalog_url: 'https://www.general-taiwan.com/support/download'
+                    },
+                    {
+                        id: 'lg', name: 'LG 樂金', model: 'DUALCOOL 雙迴轉', origin: '泰國/韓國',
+                        slogan: '美型 雙迴轉 WiFi', new: true, type: 'product',
+                        kw_range: '2.2kW ~ 8.3kW', cspf_rating: '一級能效',
+                        tech_core: '雙迴轉變頻壓縮機',
+                        tech_desc: '運轉效率高，冷房速度快 40%。',
+                        clean_tech: 'UVnano 紫外線', smart_feature: 'WiFi 標配 (ThinQ)',
+                        features: ['內建 WiFi (免加購)', 'UVnano 紫外線殺菌', '奈米離子'],
+                        scripts: {
+                            intro: 'LG 這台用的是「雙迴轉變頻壓縮機」，冷得快又安靜。重點是它直接內建 WiFi，不用像別牌還要加錢買接收器。',
+                            value: '年輕人都很愛這台，回家前十分鐘用手機先開冷氣，一進家門就透心涼。外觀也是最漂亮的，像家具一樣。'
+                        },
+                        warnings: ['保證不壞 (電子產品無絕對)', '當除濕機用 (效果有限)'],
+                        catalog_url: 'https://www.lg.com/tw/support/product-support/cs-brochures/'
+                    },
+                    {
+                        id: 'heran', name: '禾聯 HERAN', model: '沼氣防護 2.0 尊榮', origin: '台灣 (MIT)',
+                        slogan: '抗沼氣 CP王', new: true, type: 'product',
+                        kw_range: '2.3kW ~ 7.2kW', cspf_rating: '一級能效',
+                        tech_core: '沼氣防護 2.0',
+                        tech_desc: '銅管加厚防腐蝕塗層，耐用度提升。',
+                        clean_tech: '自體防霉', smart_feature: '變頻一級',
+                        features: ['高密度防護塗層', 'R32 環保冷媒', '超高 CP 值'],
+                        scripts: {
+                            intro: '如果預算有限，或者這邊比較潮濕、有水溝味，我強力推薦禾聯這台「沼氣防護 2.0」。它銅管有特殊處理，不容易被腐蝕。',
+                            value: '這台也是一級變頻喔！該省的電都有省到，但價格便宜大牌好幾千。買這台裝在這邊最划算，壞了也不心疼。'
+                        },
+                        warnings: ['跟日立一樣好 (等級不同)', '保固內全免費 (有人為除外)'],
+                        catalog_url: 'https://www.heran.com.tw/catalog-download/'
+                    }
+                ],
+
+                copyCatalog(b) {
+                    const text = `【${b.name} ${b.model}】\n${b.slogan}\n------------------\n★ 核心技術：${b.tech_core}\n★ 產品亮點：${b.features.join('、')}\n★ 適合您的原因：${b.slogan}\n\n👉 如有興趣，我可以傳詳細規格表給您參考。`;
+                    this.copyText(text, '已複製介紹文案！');
+                },
+
+                copyMatch() {
+                    if (!this.recommendation) return;
+                    const r = this.recommendation;
+                    const text = `根據您的需求，我幫您分析了一下，特別推薦【${r.brand.name}】！\n\n因為您提到最在意「${this.answers.concern === 'comfort' ? '舒適度' : this.answers.concern === 'clean' ? '清潔衛生' : this.answers.concern === 'save' ? '省電' : 'CP值'}」，這台真的最適合。\n\n理由是：${r.reason_cust}\n\n這台目前評價很好，推薦給您。`;
+                    this.copyText(text, '已複製推薦文案！');
+                },
+
+                copyText(text, msg = '已複製！') {
+                    navigator.clipboard.writeText(text).then(() => {
+                        this.toastMsg = msg;
+                        this.toastShow = true;
+                        setTimeout(() => this.toastShow = false, 2000);
+                    });
+                }
+            }
+        }
+    </script>
+
+</body>
+
+</html>

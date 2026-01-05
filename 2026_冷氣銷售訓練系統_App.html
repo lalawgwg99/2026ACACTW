@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>2026 台灣冷氣銷售訓練系統｜Professional Edition</title>
+
+<!-- Tailwind & Alpine -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+body { 
+    background-color: #0B0E14; 
+    color: #E2E8F0; 
+    font-family: 'Noto Sans TC', 'Inter', sans-serif; 
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Card Styling */
+.card { 
+    background: #151921; 
+    border: 1px solid #2D3748; 
+    border-radius: 16px; 
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+.card:hover { 
+    border-color: #4A5568; 
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+}
+
+/* Badges */
+.badge { font-size: 0.75rem; padding: 2px 8px; border-radius: 9999px; font-weight: 600; }
+.badge-red { background: #450A0A; color: #FCA5A5; border: 1px solid #7F1D1D; }
+.badge-yellow { background: #422006; color: #FDE047; border: 1px solid #713F12; }
+.badge-green { background: #052E16; color: #86EFAC; border: 1px solid #14532D; }
+.badge-blue { background: #172554; color: #93C5FD; border: 1px solid #1E3A8A; }
+
+/* Navigation */
+.tab { 
+    flex: 1; 
+    padding: 16px 4px; 
+    text-align: center; 
+    font-weight: 500; 
+    font-size: 0.95rem;
+    color: #94A3B8; 
+    border-bottom: 2px solid transparent; 
+    transition: all 0.2s;
+    position: relative;
+}
+.tab:hover { color: #E2E8F0; }
+.tab.active { color: #38BDF8; border-bottom-color: #38BDF8; font-weight: 700; }
+.tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: #38BDF8;
+    box-shadow: 0 0 10px #38BDF8;
+}
+
+/* Select Box */
+.custom-select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239ca3af' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.5rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+}
+
+/* Utilities */
+.text-gradient {
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-image: linear-gradient(to right, #38BDF8, #818CF8);
+}
+</style>
+</head>
+
+<body x-data="app()" class="selection:bg-blue-500 selection:text-white">
+
+<!-- Header -->
+<header class="fixed top-0 w-full bg-[#0B0E14]/90 backdrop-blur-md z-50 border-b border-gray-800">
+    <div class="max-w-lg mx-auto px-4 py-3">
+        <div class="flex justify-between items-center mb-2">
+            <div>
+                <h1 class="font-bold text-lg tracking-wide text-white flex items-center gap-2">
+                    <span>❄️</span> <span class="text-gradient">冷氣銷售訓練系統</span>
+                </h1>
+                <p class="text-[10px] text-gray-400 font-mono tracking-wider">VER 2026.1 PROFESSIONAL</p>
+            </div>
+            
+            <div class="flex items-center gap-2">
+                <span class="text-[10px] text-gray-500 uppercase tracking-widest">MODE</span>
+                <select x-model="role" class="bg-[#1F2937] text-white border border-gray-700 rounded px-2 py-1 text-xs focus:ring-1 focus:ring-blue-500 outline-none cursor-pointer">
+                    <option value="newbie">👶 新人模式</option>
+                    <option value="sales">🧑‍💼 銷售模式</option>
+                    <option value="manager">👔 主管模式</option>
+                </select>
+            </div>
+        </div>
+
+        <nav class="flex border-t border-gray-800 pt-1">
+            <button class="tab" :class="{active:tab==='slides'}" @click="tab='slides'">品牌重點</button>
+            <button class="tab" :class="{active:tab==='training'}" @click="tab='training'">新人速成</button>
+            <button class="tab" :class="{active:tab==='scripts'}" @click="tab='scripts'">銷售話術</button>
+            <button class="tab" :class="{active:tab==='risk'}" @click="tab='risk'">風險檢測</button>
+        </nav>
+    </div>
+</header>
+
+<!-- Main Content -->
+<main class="max-w-lg mx-auto pt-36 pb-32 px-4 space-y-6">
+
+    <!-- 1️⃣ 品牌重點 (Slides) -->
+    <section x-show="tab==='slides'" x-transition.opacity>
+        <div class="relative">
+            <select x-model="brandId" class="custom-select w-full bg-[#1F2937] text-white border border-gray-700 rounded-lg p-3 mb-4 focus:ring-2 focus:ring-blue-500 outline-none text-sm font-medium">
+                <template x-for="b in brands" :key="b.id">
+                    <option :value="b.id" x-text="b.name"></option>
+                </template>
+            </select>
+        </div>
+
+        <template x-for="b in brands" :key="b.id">
+            <div x-show="brandId===b.id" class="space-y-4" x-transition.opacity.duration.300ms>
+                
+                <!-- 品牌定位卡 -->
+                <div class="card p-5 border-l-4" :class="brandColorBorder(b.id)">
+                    <div class="flex justify-between items-start mb-2">
+                        <h2 class="font-bold text-lg text-white" x-text="b.name"></h2>
+                        <span class="badge badge-blue">定位</span>
+                    </div>
+                    <p class="text-sm text-gray-300 leading-relaxed" x-text="b.position"></p>
+                    <div class="mt-4 pt-4 border-t border-gray-700">
+                         <p class="text-xs text-gray-400 mb-1">一句話銷售：</p>
+                         <p class="text-sm font-semibold text-blue-300 italic">"<span x-text="b.slogan"></span>"</p>
+                    </div>
+                </div>
+
+                <!-- 2026 功能亮點 -->
+                <div class="card p-5">
+                    <h2 class="text-green-400 font-bold mb-4 flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        2026 主力功能
+                    </h2>
+                    <ul class="space-y-3">
+                        <template x-for="f in b.features">
+                            <li class="flex items-start gap-3 text-sm text-gray-300">
+                                <span class="text-green-500 mt-0.5">✔</span>
+                                <span x-text="f"></span>
+                            </li>
+                        </template>
+                    </ul>
+                </div>
+
+                <!-- 適合客群 -->
+                <div class="card p-5">
+                     <h2 class="text-yellow-400 font-bold mb-4 flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                        適合客群
+                    </h2>
+                    <div class="flex flex-wrap gap-2">
+                        <template x-for="t in b.targets">
+                             <span class="badge badge-yellow" x-text="t"></span>
+                        </template>
+                    </div>
+                </div>
+
+                <!-- 客訴風險 -->
+                <div class="card p-5 bg-red-900/10 border-red-900/30">
+                    <h2 class="text-red-400 font-bold mb-3 flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                        禁止話術 (風險)
+                    </h2>
+                    <ul class="space-y-3">
+                        <template x-for="w in b.warnings">
+                            <li class="flex items-start gap-3 text-sm text-gray-300">
+                                <span class="text-red-500 mt-0.5">✘</span>
+                                <span x-text="w"></span>
+                            </li>
+                        </template>
+                    </ul>
+                </div>
+            </div>
+        </template>
+    </section>
+
+    <!-- 2️⃣ 新人速成 (Training) -->
+    <section x-show="tab==='training'" class="space-y-6" x-transition.opacity>
+        
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg font-bold text-white">3 天上線速成班</h2>
+            <div class="flex gap-1">
+                 <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                 <span class="w-2 h-2 rounded-full bg-blue-400"></span>
+                 <span class="w-2 h-2 rounded-full bg-blue-300"></span>
+            </div>
+        </div>
+
+        <div class="card p-0 overflow-hidden">
+            <div class="bg-blue-900/30 p-4 border-b border-gray-700 flex justify-between items-center">
+                 <h3 class="font-bold text-blue-300">Day 1｜基礎觀念</h3>
+                 <span class="text-xs text-blue-200 bg-blue-900 px-2 py-1 rounded">不懂會亂賣</span>
+            </div>
+            <div class="p-5 space-y-4">
+                <div>
+                    <h4 class="text-sm font-semibold text-white mb-1">冷氣運作原理</h4>
+                    <p class="text-xs text-gray-400">冷氣是「搬熱」不是製冷。窗戶沒關好 = 熱一直進來 = 不會涼。</p>
+                </div>
+                <div>
+                    <h4 class="text-sm font-semibold text-white mb-1">變頻 vs 定頻</h4>
+                    <p class="text-xs text-gray-400">變頻像輕踩油門維持恆溫（省電）；定頻是全速衝+煞車（耗電）。</p>
+                </div>
+                <div>
+                    <h4 class="text-sm font-semibold text-white mb-1">不可回答的問題</h4>
+                    <ul class="text-xs text-gray-400 list-disc list-inside mt-1 space-y-1">
+                        <li>坪數大小（除非有照片/場勘）</li>
+                         <li>安裝精確費用（要師傅報價）</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="card p-0 overflow-hidden">
+            <div class="bg-green-900/30 p-4 border-b border-gray-700 flex justify-between items-center">
+                 <h3 class="font-bold text-green-300">Day 2｜品牌一句話</h3>
+                 <span class="text-xs text-green-200 bg-green-900 px-2 py-1 rounded">快速配對</span>
+            </div>
+             <div class="p-5">
+                 <div class="grid grid-cols-2 gap-3">
+                     <div class="bg-[#1F2937] p-3 rounded-lg border border-gray-700">
+                         <span class="text-xs text-gray-500 block">大金</span>
+                         <span class="text-sm font-semibold text-gray-200">舒適 / 溫濕雙控</span>
+                     </div>
+                      <div class="bg-[#1F2937] p-3 rounded-lg border border-gray-700">
+                         <span class="text-xs text-gray-500 block">日立</span>
+                         <span class="text-sm font-semibold text-gray-200">乾淨 / 凍結洗淨</span>
+                     </div>
+                      <div class="bg-[#1F2937] p-3 rounded-lg border border-gray-700">
+                         <span class="text-xs text-gray-500 block">Panasonic</span>
+                         <span class="text-sm font-semibold text-gray-200">省電 / 科技 IoT</span>
+                     </div>
+                      <div class="bg-[#1F2937] p-3 rounded-lg border border-gray-700">
+                         <span class="text-xs text-gray-500 block">富士通</span>
+                         <span class="text-sm font-semibold text-gray-200">耐操 / 洗濾網</span>
+                     </div>
+                      <div class="bg-[#1F2937] p-3 rounded-lg border border-gray-700">
+                         <span class="text-xs text-gray-500 block">LG</span>
+                         <span class="text-sm font-semibold text-gray-200">美型 / 雙迴轉</span>
+                     </div>
+                      <div class="bg-[#1F2937] p-3 rounded-lg border border-gray-700">
+                         <span class="text-xs text-gray-500 block">禾聯</span>
+                         <span class="text-sm font-semibold text-gray-200">便宜 / 沼氣防護</span>
+                     </div>
+                 </div>
+             </div>
+        </div>
+
+        <div class="card p-0 overflow-hidden">
+            <div class="bg-yellow-900/30 p-4 border-b border-gray-700 flex justify-between items-center">
+                 <h3 class="font-bold text-yellow-300">Day 3｜門市安全</h3>
+                 <span class="text-xs text-yellow-200 bg-yellow-900 px-2 py-1 rounded">避免客訴</span>
+            </div>
+            <div class="p-5">
+                <ul class="space-y-3 text-sm">
+                    <li class="flex gap-2">
+                        <span class="text-red-400 font-bold">🚫</span>
+                        <span class="text-gray-300">禁止說「絕對安靜」、「保證省多少錢」。</span>
+                    </li>
+                    <li class="flex gap-2">
+                        <span class="text-red-400 font-bold">🚫</span>
+                        <span class="text-gray-300">禁止承諾「安裝費全包」（一定是實作實收）。</span>
+                    </li>
+                    <li class="flex gap-2">
+                        <span class="text-green-400 font-bold">✅</span>
+                        <span class="text-gray-300">遇到不會的問題：「我查一下原廠手冊確認數值」。</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3️⃣ 銷售話術 (Scripts) -->
+    <section x-show="tab==='scripts'" x-transition.opacity>
+        <div class="relative">
+            <select x-model="brandId" class="custom-select w-full bg-[#1F2937] text-white border border-gray-700 rounded-lg p-3 mb-4 focus:ring-2 focus:ring-blue-500 outline-none text-sm font-medium">
+                <template x-for="b in brands" :key="b.id">
+                    <option :value="b.id" x-text="b.name"></option>
+                </template>
+            </select>
+        </div>
+
+        <template x-for="b in brands" :key="b.id">
+            <div x-show="brandId===b.id" class="space-y-4">
+                
+                <div class="flex items-center justify-between px-1">
+                    <span class="text-xs text-gray-500">門市實戰話術小卡</span>
+                    <button class="text-xs text-blue-400 flex items-center gap-1 hover:text-blue-300">
+                        📋 點擊卡片複製
+                    </button>
+                </div>
+
+                <!-- 標準開場 -->
+                <div class="card p-5 border-l-4 border-green-500 cursor-pointer active:scale-95 transition-transform" @click="copy(b.scripts.intro)">
+                    <h3 class="text-xs text-green-400 font-bold mb-2 uppercase tracking-wide">① 標準介紹 (Safe)</h3>
+                    <p class="text-gray-200 leading-relaxed font-light text-base" x-text="b.scripts.intro"></p>
+                </div>
+
+                <!-- 價值防禦 -->
+                <div class="card p-5 border-l-4 border-yellow-500 cursor-pointer active:scale-95 transition-transform" @click="copy(b.scripts.value)">
+                    <h3 class="text-xs text-yellow-400 font-bold mb-2 uppercase tracking-wide">② 客人嫌貴/問差異</h3>
+                    <p class="text-gray-200 leading-relaxed font-light text-base" x-text="b.scripts.value"></p>
+                </div>
+
+                <!-- 效果與省電 -->
+                <div class="card p-5 border-l-4 border-blue-500 cursor-pointer active:scale-95 transition-transform" @click="copy(b.scripts.effect)">
+                    <h3 class="text-xs text-blue-400 font-bold mb-2 uppercase tracking-wide">③ 問省電與靜音</h3>
+                    <p class="text-gray-200 leading-relaxed font-light text-base" x-text="b.scripts.effect"></p>
+                </div>
+
+                 <!-- 萬用保護 -->
+                <div class="card p-5 bg-gray-800/50 border border-gray-600 border-dashed cursor-pointer active:scale-95 transition-transform" @click="copy(b.scripts.safe)">
+                    <h3 class="text-xs text-gray-400 font-bold mb-2 uppercase tracking-wide">🔗 萬用保護句</h3>
+                    <p class="text-gray-400 italic text-sm" x-text="b.scripts.safe"></p>
+                </div>
+
+                <div x-data="{show: false}" x-show="show" x-transition.leave.duration.1000ms x-init="$watch('copiedContent', val => { show=true; setTimeout(()=>show=false, 2000) })" class="fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-black/80 text-white px-4 py-2 rounded-full text-xs backdrop-blur border border-gray-700 shadow-xl z-50">
+                    ✅ 已複製話術
+                </div>
+            </div>
+        </template>
+    </section>
+
+    <!-- 4️⃣ 風險檢測 (Risk Checker - BRAIN INNOVATION) -->
+    <section x-show="tab==='risk'" class="space-y-6" x-transition.opacity>
+        
+        <!-- 工具：話術檢測器 -->
+        <div class="card p-5 border border-purple-500/30 bg-purple-900/10">
+            <h2 class="font-bold text-lg text-purple-300 mb-2 flex items-center gap-2">
+                🤖 AI 話術風險檢測
+            </h2>
+            <p class="text-xs text-gray-400 mb-4">輸入你想說的話，系統自動偵測是否踩雷</p>
+            
+            <textarea x-model="checkText" class="w-full bg-[#0B0E14] border border-gray-700 rounded-lg p-3 text-sm text-white focus:border-purple-500 transition-colors h-24 resize-none mb-3" placeholder="例如：這台保證安靜..."></textarea>
+            
+            <div x-show="checkText.length > 0">
+                <template x-if="hasRisk">
+                    <div class="bg-red-900/30 border border-red-800 rounded p-3 flex gap-3 animate-pulse">
+                        <span class="text-red-400 text-xl">⚠️</span>
+                        <div>
+                            <p class="text-red-300 font-bold text-sm">偵測到風險用語！</p>
+                            <p class="text-red-200/70 text-xs mt-1">包含：保證、絕對、完全、療效等字眼。建議加上「依使用狀況」、「相對」等修飾詞。</p>
+                        </div>
+                    </div>
+                </template>
+                 <template x-if="!hasRisk">
+                    <div class="bg-green-900/30 border border-green-800 rounded p-3 flex gap-3">
+                        <span class="text-green-400 text-xl">✅</span>
+                        <div>
+                            <p class="text-green-300 font-bold text-sm">目前無明顯違規關鍵字</p>
+                            <p class="text-green-200/70 text-xs mt-1">請記得仍需符合官方標示與誇大不實法規。</p>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+
+        <div class="card p-5">
+            <h2 class="font-bold text-white mb-4">📢 銷售風險紅黃綠燈</h2>
+            <div class="space-y-4">
+                <div class="flex items-start gap-4">
+                     <span class="badge badge-red shrink-0 mt-1">紅燈 (禁止)</span>
+                     <p class="text-sm text-gray-400">「這台保證不壞」、「完全沒聲音」、「電費只要幾十塊」、「可以防新冠病毒」。(易被檢舉誇大)</p>
+                </div>
+                <div class="flex items-start gap-4">
+                     <span class="badge badge-yellow shrink-0 mt-1">黃燈 (小心)</span>
+                     <p class="text-sm text-gray-400">「這台最安靜」、「大家都不洗冷氣」。(每個人的感覺不同，易有客訴爭議)</p>
+                </div>
+                 <div class="flex items-start gap-4">
+                     <span class="badge badge-green shrink-0 mt-1">綠燈 (安全)</span>
+                     <p class="text-sm text-gray-400">「一級能效」、「實驗證實可抑制」、「依實際環境會有差異」。(保守、有憑據)</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card p-5 border border-blue-800/50 bg-blue-900/10" x-show="role==='manager'">
+            <h2 class="font-bold text-blue-300 mb-3 text-sm uppercase tracking-wider">👔 主管專區：每日檢查重點</h2>
+            <ul class="text-sm space-y-3 text-gray-300">
+                <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-blue-400"></div>新人是否了解「安裝費實作實收」？</li>
+                <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-blue-400"></div>是否有誇大省電金額（例如：一年省一萬）？</li>
+                <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-blue-400"></div>是否針對特殊環境（頂樓西曬）加強坪數？</li>
+            </ul>
+        </div>
+    </section>
+
+</main>
+
+<script>
+function app(){
+return{
+tab: 'slides',
+role: 'newbie',
+brandId: 'daikin',
+checkText: '',
+copiedContent: '',
+
+get hasRisk() {
+    const risks = ['保證', '絕對', '一定', '完全', '不用洗', '療效', '醫', '不會壞', '永久'];
+    return risks.some(r => this.checkText.includes(r));
+},
+copy(text) {
+    navigator.clipboard.writeText(text);
+    this.copiedContent = text;
+},
+brandColorBorder(id) {
+    const colors = {
+        'daikin': 'border-green-500', 
+        'hitachi': 'border-blue-500', 
+        'panasonic': 'border-yellow-500',
+        'fujitsu': 'border-gray-400',
+        'lg': 'border-pink-500',
+        'heran': 'border-purple-500'
+    };
+    return colors[id] || 'border-gray-500';
+},
+brands:[
+{
+    id:'daikin',
+    name:'大金 DAIKIN',
+    slogan:'買大金，就是買安心',
+    position:'空調界的愛馬仕，日本市佔第一，專注冷氣本業，技術領先但價格最高。',
+    features:['Hybrid Cooling 溫濕雙控 (不黏膩)','閃流放電 (分解細菌黴菌)','搖擺式壓縮機 (安靜耐用)'],
+    targets:['預算充足','怕吵的人','重視舒適/濕度'],
+    warnings:['禁止說「完全沒聲音」','禁止說「不用買空氣清淨機」'],
+    scripts:{
+        intro:'大哥/大姊，大金是現在全球空調第一品牌，特色是「溫濕雙控」，不只冷，還能讓房間濕度維持得很舒服，不會像一般冷氣吹久了皮膚乾乾的。',
+        value:'它的壓縮機是針對「低噪音」跟「耐用」特別設計，加上全機防蝕做得很好。買冷氣一吹就是10年，一年多花幾百塊買這種舒適度，其實很划算。',
+        effect:'(省電) 它是一級能效，低頻運轉非常穩定省電。\n(靜音) 它的室內機運轉聲音非常小，甚至聽不太到，很適合淺眠的人。',
+        safe:'這部分原廠技術手冊寫得比較細，我幫您確認一下數值，給您最正確的資訊。'
+    }
+},
+{
+    id:'hitachi',
+    name:'日立 HITACHI',
+    slogan:'珍愛台灣，凍結洗淨',
+    position:'台灣市場長青樹，冷氣界的豐田。強調日本科技、台灣製造(MIT)，凍結洗淨的發明者。',
+    features:['凍結洗淨 3.0+ (連室外機都洗)','體感舒適科技 (不忽冷忽熱)','台灣製造 (在地化設計)'],
+    targets:['產地情結(MIT)','潔癖/怕霉味','追求均衡性'],
+    warnings:['禁止說「永遠不用找人洗」','禁止說「全機都是日本製」'],
+    scripts:{
+        intro:'日立是我們台灣賣最好的品牌之一，最大特色就是「凍結洗淨」。冷氣久了會髒，它會自動結冰再解凍把髒污洗掉，讓吹出來的風都很乾淨。',
+        value:'日立很多高階機種使用日本製壓縮機，而且是真正針對台灣氣候設計的MIT產品，用料實在，散熱效果特別好。',
+        effect:'(省電) 它是省電前段班，因為會自己清髒污，長期效率維持得好，才是真的省。\n(舒適) 有體感舒適科技，偵測周圍溫度，不會忽冷忽熱。',
+        safe:'關於這個詳細規格，因為每一年型號更新很快，我查一下今年的最新型錄跟您確認。'
+    }
+},
+{
+    id:'panasonic',
+    name:'Panasonic',
+    slogan:'史上最省電，智慧健康',
+    position:'全功能型的資優生，省電第一，功能最花俏齊全。結合 nanoe 健康科技與 IoT 智慧家電。',
+    features:['nanoe X 48兆 (主動抑菌)','超越國家一級標準 (最省電)','24H 防霉監控 (關機也運作)'],
+    targets:['精打細算/看數據','科技控/IoT','過敏兒家庭'],
+    warnings:['禁止說「殺死所有新冠病毒」','禁止說「絕對不會有酸味」'],
+    scripts:{
+        intro:'找最省電的冷氣，我推薦國際牌。它是業界省電冠軍，還有 nanoe X 健康科技，開冷氣同時就像開了一台空氣清淨機。',
+        value:'它一台抵兩台用！冷氣加清淨機。而且省電效率最高，長遠來看光電費就省回來了。',
+        effect:'(省電) 它的數值超越國家標準 168%，是目前市面最省電。\n(舒適) 有乾燥防霉功能，開完冷氣自動烘乾，空氣很清新。',
+        safe:'這個 App 的進階設定功能很多，我開影片示範給您看比較清楚。'
+    }
+},
+{
+    id:'fujitsu',
+    name:'富士通 FUJITSU',
+    slogan:'濾網自動掃，懶人救星',
+    position:'默默耕耘的技術職人，耐操、不花俏。自動洗濾網的始祖，全機10年保固。',
+    features:['自動清潔濾網 (掃地機器人)','55度C 加熱除菌','機板塗膠保護 (防潮防壁虎)'],
+    targets:['超級懶人','家中挑高','沿海惡劣環境'],
+    warnings:['禁止說「完全不用保養」','禁止說「集塵盒永遠不用清」'],
+    scripts:{
+        intro:'如果家裡挑高或覺得拆濾網麻煩，這台富士通是唯一「濾網會自動掃地」的冷氣，不用每兩週爬高拆濾網，它自己會清。',
+        value:'因為它多了自動清潔機器人在裡面啊！且全機10年保固，連主機板都有特別塗膠防護，非常耐用。',
+        effect:'(省電) 濾網乾淨冷氣就不會耗電。它確保濾網都無塵，維持新機般的省電。\n(靜音) 風量大冷得快，怕吵切換靜音模式也很安靜。',
+        safe:'這個特殊功能的運作細節，我拿原廠的介紹圖直接解釋給您聽。'
+    }
+},
+{
+    id:'lg',
+    name:'LG 樂金',
+    slogan:'雙迴轉變頻，美型首選',
+    position:'韓系美學與變頻專門家，外型最漂亮(鏡面)。雙迴轉變頻技術，WiFi 全系列標配。',
+    features:['雙迴轉變頻壓縮機 (快冷省電)','WiFi 內建 (App控制)','UVnano (紫外線殺菌)'],
+    targets:['外貌協會(裝潢)','年輕家庭/手機控','高CP值追求者'],
+    warnings:['禁止說「保證韓國原裝」','禁止說「可當專用除濕機用」'],
+    scripts:{
+        intro:'這台 LG 外型真的很漂亮，全系列都是「雙迴轉變頻壓縮機」，冷房快又安靜。重點是 WiFi 直接內建，不用加購就能用手機控。',
+        value:'比起日系，LG CP值很高！一樣規格跟省電，還內建 WiFi 跟殺菌，價格便宜好幾千塊。',
+        effect:'(省電) 雙迴轉效率好，可用 App 設定「主動節能」限制用電量。\n(靜音) 雙迴轉震動小，室外機運轉平穩安靜。',
+        safe:'LG 的 App 功能常常更新，我確認一下目前最新版本支援的功能細節。'
+    }
+},
+{
+    id:'heran',
+    name:'禾聯 HERAN',
+    slogan:'台灣銷售冠軍，抗沼氣',
+    position:'本土銷售天王、CP值怪獸。最懂台灣環境，主打沼氣防護與高性價比。',
+    features:['沼氣防護 (抗腐蝕塗層)','R32 一級能效','高 CP 值 (便宜大碗)'],
+    targets:['房東/出租房','預算型買家','住硫磺/水溝區'],
+    warnings:['禁止說「跟大金一樣好」','禁止說「保固內什麼都免費」'],
+    scripts:{
+        intro:'想找便宜、耐用、冷房好的，禾聯是台灣冠軍。特別是如果住比較潮濕或有水溝味，這台有「沼氣防護」，不容易壞。',
+        value:'雖然便宜，但變頻、R32、一級能效全都有，還有別人沒有的抗沼氣塗層，這價位真的沒對手。',
+        effect:'(省電) 也是國家認證一級能效，可退稅。電費跟大牌差不多，但機子先省一萬。\n(靜音) 變頻技術進步，運轉聲很小，放客廳房間沒問題。',
+        safe:'這台目前的促銷活動跟保固年限，我幫您查一下電腦最新的公告。'
+    }
+}
+]
+}
+}
+</script>
+
+</body>
+</html>
