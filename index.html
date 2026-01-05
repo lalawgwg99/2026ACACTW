@@ -212,13 +212,24 @@
                                 <p class="text-xs text-blue-300 font-bold uppercase tracking-wider mb-2"
                                     x-text="b.slogan"></p>
 
-                                <!-- Highlights Badge List -->
-                                <div class="space-y-3 mb-5">
+                                <!-- Highlights Badge List (Clickable for Videos) -->
+                                <div class="space-y-2.5 mb-5">
                                     <template x-for="h in b.highlights">
-                                        <div class="flex items-start gap-2.5">
-                                            <span class="text-blue-500 mt-1 shrink-0 text-xs">★</span>
-                                            <p class="text-xs text-gray-300 leading-relaxed" x-text="h"></p>
-                                        </div>
+                                        <template x-if="h.url">
+                                            <a :href="h.url" target="_blank" rel="noopener noreferrer"
+                                                class="flex items-start gap-2.5 bg-[#1a1a1a] hover:bg-[#222] border border-[#222] hover:border-blue-500/50 p-2.5 rounded-lg transition-all cursor-pointer group">
+                                                <span
+                                                    class="text-red-500 mt-0.5 shrink-0 text-sm group-hover:scale-110 transition-transform">▶</span>
+                                                <p class="text-xs text-gray-300 leading-relaxed group-hover:text-blue-300"
+                                                    x-text="h.text"></p>
+                                            </a>
+                                        </template>
+                                        <template x-if="!h.url">
+                                            <div class="flex items-start gap-2.5">
+                                                <span class="text-blue-500 mt-1 shrink-0 text-xs">★</span>
+                                                <p class="text-xs text-gray-400 leading-relaxed" x-text="h.text"></p>
+                                            </div>
+                                        </template>
                                     </template>
                                 </div>
                             </div>
@@ -576,10 +587,10 @@
                         clean_tech: '閃流放電 (分解病毒)', smart_feature: 'App內建 (需選配)',
                         features: ['閃流放電主動除菌', '專利搖擺式壓縮機', '防霉運轉'],
                         highlights: [
-                            '【閃流放電】主動釋放電漿，分解病毒細菌 (比濾網被動過濾強1000倍)',
-                            '【溫濕雙控】獨家 Hybrid Cooling，除濕卻不降溫，省電又舒適',
-                            '【康達效應】氣流沿天花板跑，不直吹人體，如自然風般涼爽',
-                            '【日本防霉】關機後自動送風乾燥 + 閃流殺菌，防止機內發霉'
+                            { text: '【閃流放電】主動釋放電漿，分解病毒細菌 (比濾網被動過濾強1000倍)', url: 'https://www.youtube.com/watch?v=pDkiNKeCZHo' },
+                            { text: '【溫濕雙控】獨家 Hybrid Cooling，除濕卻不降溫，省電又舒適', url: 'https://www.youtube.com/watch?v=7-kPK5wSbJM' },
+                            { text: '【康達效應】氣流沿天花板跑，不直吹人體，如自然風般涼爽', url: null },
+                            { text: '【日本防霉】關機後自動送風乾燥 + 閃流殺菌，防止機內發霉', url: null }
                         ],
                         scripts: {
                             intro: 'momo銷售冠軍就是這台大金橫綱Z。它最強的是「閃流放電」，這不是一般負離子喔，是電漿放電，可以直接「分解」病毒跟甲醛。家裡有小朋友或過敏體質的，這台絕對是首選。',
@@ -597,10 +608,10 @@
                         clean_tech: '凍結洗淨 (水洗+烘乾)', smart_feature: '體感舒適科技',
                         features: ['凍結洗淨 3.0+', '日本製壓縮機(部分)', '風扇自動掃除'],
                         highlights: [
-                            '【風扇自動掃】業界唯一！連最難洗的風扇葉片都能自動刷洗',
-                            '【凍結洗淨 3.0+】急速結冰剝離髒污 → 解凍沖洗 → 熱風乾燥',
-                            '【油污去除】先加熱融化油垢再清洗，廚房附近安裝首選',
-                            '【露水盤銀離子】抑菌率 99.9%，長期使用不產生黏液臭味'
+                            { text: '【風扇自動掃】業界唯一！連最難洗的風扇葉片都能自動刷洗', url: 'https://www.youtube.com/watch?v=Xf6qCqLBFnI' },
+                            { text: '【凍結洗淨 3.0+】急速結冰剝離髒污 → 解凍沖洗 → 熱風乾燥', url: 'https://www.youtube.com/watch?v=7s0QG6Y0Xqg' },
+                            { text: '【油污去除】先加熱融化油垢再清洗，廚房附近安裝首選', url: null },
+                            { text: '【露水盤銀離子】抑菌率 99.9%，長期使用不產生黏液臭味', url: null }
                         ],
                         scripts: {
                             intro: '日立這台是目前市面上「最愛乾淨」的冷氣。它的「凍結洗淨 3.0+」不只洗熱交換器，連裡面的風扇都會伸出刷子自己刷！這是其他品牌完全沒有的功能。',
@@ -618,10 +629,10 @@
                         clean_tech: 'nanoe™ X (主動抑菌)', smart_feature: 'IoT 智慧家電整合',
                         features: ['nanoe X 48兆抑菌', '24H 防霉監控', '史上最省電'],
                         highlights: [
-                            '【史上最省電】新一級能效標準超越者，CSPF 高達 10.5',
-                            '【nanoe X 48兆】每秒釋放 48 兆個氫氧離子，主動抑制新冠/流感',
-                            '【24H 防霉】關機後主動偵測濕度，自動釋放 nanoe X 防霉',
-                            '【智慧家電】唯一完整整合 Google Home / Apple HomeKit 生態系'
+                            { text: '【史上最省電】新一級能效標準超越者，CSPF 高達 10.5', url: null },
+                            { text: '【nanoe X 48兆】每秒釋放 48 兆個氫氧離子，主動抑制新冠/流感', url: 'https://www.youtube.com/watch?v=2LGwLJLwrSk' },
+                            { text: '【24H 防霉】關機後主動偵測濕度，自動釋放 nanoe X 防霉', url: null },
+                            { text: '【智慧家電】唯一完整整合 Google Home / Apple HomeKit 生態系', url: null }
                         ],
                         scripts: {
                             intro: 'Panasonic 這台 UX 系列在網路上被封為「史上最省電」神機！它的 CSPF 值高達 10.5，比國家一級標準還高出快一倍，開整天也不心疼電費。',
@@ -639,10 +650,10 @@
                         clean_tech: '自動掃濾網+熱交換', smart_feature: '0.5度精準控溫',
                         features: ['自動清潔濾網', '熱交換器加熱除菌', '機板矽膠塗層'],
                         highlights: [
-                            '【自動掃地機器人】內建濾網掃除機制，告別且爬高拆洗惡夢',
-                            '【5年免清】超大集塵盒，正常使用約 5-10 年才需倒一次灰塵',
-                            '【熱交換器加熱】55度熱水洗淨+加熱除菌，徹底殺死黴菌',
-                            '【機板塗層】一般冷氣怕壁虎/潮濕，它連機板都有防護塗膠'
+                            { text: '【自動掃濾網】內建濾網栅捻掃除機制，告別爬高拆洗惡夢', url: 'https://www.youtube.com/watch?v=m6T6n5M3hDk' },
+                            { text: '【5年免清】超大集塵盒，正常使用約 5-10 年才需倒一次灰塵', url: null },
+                            { text: '【熱交換器加熱】55度熱水洗淨+加熱除菌，徹底殺死黴菌', url: null },
+                            { text: '【機板塗層】一般冷氣怕壁虎/潮濕，它連機板都有防護塗膠', url: null }
                         ],
                         scripts: {
                             intro: '這台富士通 nocria Z 是「懶人的救星」。您家挑高嗎？還是長輩不方便爬高？這台濾網會「自己掃地」，灰塵自動集中到盒子裡，大概 5 年倒一次就好！',
@@ -660,10 +671,10 @@
                         clean_tech: 'UVnano 紫外線', smart_feature: 'WiFi 標配 (ThinQ)',
                         features: ['內建 WiFi (免加購)', 'UVnano 紫外線殺菌', '奈米離子'],
                         highlights: [
-                            '【WiFi 標配】不需像日系品牌要另外加購模組，直接內建聯網',
-                            '【電費監控】透過 ThinQ App 可隨時查看用電量，電費不再爆表',
-                            '【雙迴轉變頻】LG 獨家雙迴轉壓縮機，冷房速度快 40%，更安靜',
-                            '【UVnano】風扇內建紫外線 LED 殺菌光，吹出的風無菌更乾淨'
+                            { text: '【WiFi 標配】不需像日系品牌要另外加購模組，直接內建聯網', url: 'https://www.youtube.com/watch?v=Yc5e1U8g-Bg' },
+                            { text: '【電費監控】透過 ThinQ App 可隨時查看用電量，電費不再爆表', url: 'https://www.youtube.com/watch?v=y4Z8qB8J7vY' },
+                            { text: '【雙迴轉變頻】LG 獨家雙迴轉壓縮機，冷房速度快 40%，更安靜', url: null },
+                            { text: '【UVnano】風扇內建紫外線 LED 殺菌光，吹出的風無菌更乾淨', url: null }
                         ],
                         scripts: {
                             intro: 'LG 這台現在年輕人指名度最高！因為它直接「內建 WiFi」，不用另外花錢買接收器。回家前手機按一下，到家馬上涼，還能看到今天吹了幾度電。',
@@ -681,10 +692,10 @@
                         clean_tech: '自體防霉', smart_feature: '變頻一級',
                         features: ['高密度防護塗層', 'R32 環保冷媒', '超高 CP 值'],
                         highlights: [
-                            '【沼氣防護 2.0】針對台灣水溝/溫泉環境，銅管加強抗腐蝕塗層',
-                            '【高 CP 值】同樣變頻一級能效，價格硬是比日系省下 5-8 千',
-                            '【芬多殺菌】(選配) 可加裝殺菌模組，經 SGS 認證有效除菌',
-                            '【藍波防鏽】室外機散熱片強化防鏽，海邊/潮濕地區首選'
+                            { text: '【沼氣防護 2.0】針對台灣水溝/溫泉環境，銅管加強抗腐蝕塗層', url: 'https://www.youtube.com/watch?v=RwZJ3y6iEdk' },
+                            { text: '【高 CP 值】同樣變頻一級能效，價格硬是比日系省下 5-8 千', url: null },
+                            { text: '【芬多殺菌】(選配) 可加裝殺菌模組，經 SGS 認證有效除菌', url: null },
+                            { text: '【藍波防鏽】室外機散熱片強化防鏽，海邊/潮濕地區首選', url: null }
                         ],
                         scripts: {
                             intro: '如果您的安裝環境比較特殊，例如靠近水溝有味道，或是住北投、海邊，我唯一推薦禾聯這台「沼氣防護 2.0」。它銅管有穿防護衣，不會兩三年就破洞漏冷媒。',
