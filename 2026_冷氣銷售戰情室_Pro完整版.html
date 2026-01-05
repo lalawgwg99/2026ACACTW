@@ -212,26 +212,15 @@
                                 <p class="text-xs text-blue-300 font-bold uppercase tracking-wider mb-2"
                                     x-text="b.slogan"></p>
 
-                                <!-- Key Specs Grid -->
-                                <div class="grid grid-cols-2 gap-2 mb-4">
-                                    <div class="bg-[#1a1a1a] p-2 rounded border border-[#222]">
-                                        <span class="text-[10px] text-gray-500 block">核心技術</span>
-                                        <span class="text-xs text-gray-200 font-medium" x-text="b.tech_core"></span>
-                                    </div>
-                                    <div class="bg-[#1a1a1a] p-2 rounded border border-[#222]">
-                                        <span class="text-[10px] text-gray-500 block">CSPF 能效</span>
-                                        <span class="text-xs text-gray-200 font-medium" x-text="b.cspf_rating"></span>
-                                    </div>
-                                </div>
-
-                                <ul class="space-y-1.5 list-none">
-                                    <template x-for="f in b.features">
-                                        <li class="text-xs text-gray-400 flex items-start gap-2">
-                                            <span class="text-blue-500 mt-0.5">✓</span>
-                                            <span x-text="f"></span>
-                                        </li>
+                                <!-- Highlights Badge List -->
+                                <div class="space-y-3 mb-5">
+                                    <template x-for="h in b.highlights">
+                                        <div class="flex items-start gap-2.5">
+                                            <span class="text-blue-500 mt-1 shrink-0 text-xs">★</span>
+                                            <p class="text-xs text-gray-300 leading-relaxed" x-text="h"></p>
+                                        </div>
                                     </template>
-                                </ul>
+                                </div>
                             </div>
 
                             <!-- Action -->
@@ -583,72 +572,102 @@
                         slogan: '買大金 買安心', new: true, type: 'product',
                         kw_range: '2.2kW ~ 9.0kW', cspf_rating: '超越一級',
                         tech_core: 'Hybrid Cooling 溫濕雙控',
-                        tech_desc: '獨家雙控技術，除濕不降溫，體感最舒適。',
+                        tech_desc: 'Hybrid Cooling 溫濕雙控 + 閃流放電，不只冷更不乾。',
                         clean_tech: '閃流放電 (分解病毒)', smart_feature: 'App內建 (需選配)',
                         features: ['閃流放電主動除菌', '專利搖擺式壓縮機', '防霉運轉'],
+                        highlights: [
+                            '【閃流放電】主動釋放電漿，分解病毒細菌 (比濾網被動過濾強1000倍)',
+                            '【溫濕雙控】獨家 Hybrid Cooling，除濕卻不降溫，省電又舒適',
+                            '【康達效應】氣流沿天花板跑，不直吹人體，如自然風般涼爽',
+                            '【日本防霉】關機後自動送風乾燥 + 閃流殺菌，防止機內發霉'
+                        ],
                         scripts: {
-                            intro: '這台是我們賣最好的大金橫綱系列，今年最新的。它最大特色是「溫濕雙控」，不只會冷，還會控制濕度，不會讓你覺得冷氣吹久了皮膚乾乾癢癢的。',
-                            value: '雖然價格高一點，但它是用專利的搖擺式壓縮機，非常安靜耐用。冷氣一吹十年，平均一天多幾塊錢，換來這種像自然風的舒適感，絕對值得。'
+                            intro: 'momo銷售冠軍就是這台大金橫綱Z。它最強的是「閃流放電」，這不是一般負離子喔，是電漿放電，可以直接「分解」病毒跟甲醛。家裡有小朋友或過敏體質的，這台絕對是首選。',
+                            value: '而且它有「溫濕雙控」，以前冷氣除濕會越吹越冷，這台不會！它能維持溫度但把濕度降下來，體感像秋天一樣乾爽，皮膚也不會乾癢。雖然貴一點，但這種舒適感別牌做不到。'
                         },
                         warnings: ['保證完全無聲 (仍有風聲)', '不用買清淨機 (功能不同)'],
-                        catalog_url: 'https://www.daikintaiwan.com/product_catalog.shtml'
+                        catalog_url: 'https://www.daikintaiwan.com/allproduct/catalog.shtml'
                     },
                     {
                         id: 'hitachi', name: '日立 HITACHI', model: '尊榮 / 頂級系列 (2026)', origin: '台灣 (MIT)',
                         slogan: '珍愛台灣 凍結洗淨', new: true, type: 'product',
                         kw_range: '2.2kW ~ 14.0kW', cspf_rating: '一級能效',
                         tech_core: '凍結洗淨 3.0+',
-                        tech_desc: '急速結冰帶走髒污，熱風乾燥防霉。',
+                        tech_desc: '業界唯一「風扇也會自己洗」，凍結洗淨 3.0+ 全面升級。',
                         clean_tech: '凍結洗淨 (水洗+烘乾)', smart_feature: '體感舒適科技',
-                        features: ['凍結洗淨 3.0+', '日本製壓縮機(部分)', '露水盤銀離子'],
+                        features: ['凍結洗淨 3.0+', '日本製壓縮機(部分)', '風扇自動掃除'],
+                        highlights: [
+                            '【風扇自動掃】業界唯一！連最難洗的風扇葉片都能自動刷洗',
+                            '【凍結洗淨 3.0+】急速結冰剝離髒污 → 解凍沖洗 → 熱風乾燥',
+                            '【油污去除】先加熱融化油垢再清洗，廚房附近安裝首選',
+                            '【露水盤銀離子】抑菌率 99.9%，長期使用不產生黏液臭味'
+                        ],
                         scripts: {
-                            intro: '日立最新的「凍結洗淨 3.0+」很厲害，冷氣自己會定期「結冰」再「解凍」，把裡面的灰塵沖出來，最後還會加熱烘乾。',
-                            value: '一般冷氣用久了會臭就是因為裡面發霉。日立這台會自己洗澡，您可以省下很多以後請人洗冷氣的錢，空氣也比較乾淨。'
+                            intro: '日立這台是目前市面上「最愛乾淨」的冷氣。它的「凍結洗淨 3.0+」不只洗熱交換器，連裡面的風扇都會伸出刷子自己刷！這是其他品牌完全沒有的功能。',
+                            value: '冷氣不冷或有霉味，通常是裡面髒了。這台會自己「洗澡」加「烘乾」，就像您家裡那台洗碗機一樣，保證吹出來的風永遠是乾淨的，省下以後請人拆機清洗的大筆費用。'
                         },
                         warnings: ['永遠不用找人洗 (仍需深層保養)', '全機日本製造 (部分MIT)'],
-                        catalog_url: 'https://www.hitachi-homeappliances.com.tw/service/catalog.aspx'
+                        catalog_url: 'https://www.jci-hitachi.tw/service/catalog.aspx'
                     },
                     {
                         id: 'panasonic', name: 'Panasonic', model: 'UX / VX 系列 (2026)', origin: '台灣 (MIT)',
                         slogan: 'Smart App 史上最省電', new: true, type: 'tech',
                         kw_range: '2.2kW ~ 11.0kW', cspf_rating: '超越標準 168%',
                         tech_core: 'nanoe™ X 48兆',
-                        tech_desc: '釋放48兆氫氧離子，主動抑制病毒。',
+                        tech_desc: 'CSPF 10.5 史上最省電！nanoe X 48兆抑菌。',
                         clean_tech: 'nanoe™ X (主動抑菌)', smart_feature: 'IoT 智慧家電整合',
-                        features: ['nanoe X 48兆抑菌', '24H 防霉監控', '乾燥防霉'],
+                        features: ['nanoe X 48兆抑菌', '24H 防霉監控', '史上最省電'],
+                        highlights: [
+                            '【史上最省電】新一級能效標準超越者，CSPF 高達 10.5',
+                            '【nanoe X 48兆】每秒釋放 48 兆個氫氧離子，主動抑制新冠/流感',
+                            '【24H 防霉】關機後主動偵測濕度，自動釋放 nanoe X 防霉',
+                            '【智慧家電】唯一完整整合 Google Home / Apple HomeKit 生態系'
+                        ],
                         scripts: {
-                            intro: '如果您在意電費，Panasonic 這台 UX 系列是目前「史上最省電」的，CSPF 值超越國家標準很多。而且開冷氣同時就在殺菌。',
-                            value: '它有 nanoe X 科技，經實驗證實可以抑制新冠病毒跟流感。買一台冷氣等於多賺到一台高階空氣清淨機。'
+                            intro: 'Panasonic 這台 UX 系列在網路上被封為「史上最省電」神機！它的 CSPF 值高達 10.5，比國家一級標準還高出快一倍，開整天也不心疼電費。',
+                            value: '而且它內建的 nanoe X 是 48 兆的高階版，不只能除臭，實驗證明能抑制新冠跟流感病毒。買這台等於買了「頂級冷氣 + 醫療級清淨機」，CP值最高。'
                         },
                         warnings: ['可以殺死所有病毒 (僅抑制)', '保證家裡沒味道 (視環境)'],
-                        catalog_url: 'https://www.panasonic.com/tw/support/download-search.html'
+                        catalog_url: 'https://www.panasonic.com/tw/support/catalog.html'
                     },
                     {
                         id: 'fujitsu', name: '富士通 FUJITSU', model: 'nocria Z 系列', origin: '泰國',
                         slogan: '技術職人 自動掃地', new: false, type: 'product',
                         kw_range: '2.2kW ~ 9.0kW', cspf_rating: '一級能效',
                         tech_core: '自動清潔濾網',
-                        tech_desc: '內建機械手臂，定時掃除濾網灰塵。',
+                        tech_desc: '懶人首選！每 5 年才需倒一次灰塵，濾網自動掃。',
                         clean_tech: '自動掃濾網+熱交換', smart_feature: '0.5度精準控溫',
                         features: ['自動清潔濾網', '熱交換器加熱除菌', '機板矽膠塗層'],
+                        highlights: [
+                            '【自動掃地機器人】內建濾網掃除機制，告別且爬高拆洗惡夢',
+                            '【5年免清】超大集塵盒，正常使用約 5-10 年才需倒一次灰塵',
+                            '【熱交換器加熱】55度熱水洗淨+加熱除菌，徹底殺死黴菌',
+                            '【機板塗層】一般冷氣怕壁虎/潮濕，它連機板都有防護塗膠'
+                        ],
                         scripts: {
-                            intro: '家裡天花板比較高嗎？這台富士通是唯一「濾網會自動掃地」的，您不用每次都要拿梯子爬高拆濾網，它自己會清得乾乾淨淨。',
-                            value: '濾網乾淨，冷氣就省電。這台雖然沒什麼廣告，但全機 10 年保固，連機板都有塗膠防護，是內行人才知道的耐用好貨。'
+                            intro: '這台富士通 nocria Z 是「懶人的救星」。您家挑高嗎？還是長輩不方便爬高？這台濾網會「自己掃地」，灰塵自動集中到盒子裡，大概 5 年倒一次就好！',
+                            value: '很多冷氣不冷是因為濾網塞住，這台永遠保持濾網乾淨，所以永遠都跟新機一樣省電。雖然它廣告不多，但技術力絕對是日本第一梯隊，也是唯一敢保固機板塗層的品牌。'
                         },
                         warnings: ['完全不用保養 (集塵盒仍需倒)', '永遠不用管它'],
-                        catalog_url: 'https://www.general-taiwan.com/support/download'
+                        catalog_url: 'https://www.fujitsu-general.com/tw/support/downloads/index.html'
                     },
                     {
                         id: 'lg', name: 'LG 樂金', model: 'DUALCOOL 雙迴轉', origin: '泰國/韓國',
                         slogan: '美型 雙迴轉 WiFi', new: true, type: 'product',
                         kw_range: '2.2kW ~ 8.3kW', cspf_rating: '一級能效',
                         tech_core: '雙迴轉變頻壓縮機',
-                        tech_desc: '運轉效率高，冷房速度快 40%。',
+                        tech_desc: '年輕人最愛！WiFi 內建 + 雙迴轉變頻，電量隨時看。',
                         clean_tech: 'UVnano 紫外線', smart_feature: 'WiFi 標配 (ThinQ)',
                         features: ['內建 WiFi (免加購)', 'UVnano 紫外線殺菌', '奈米離子'],
+                        highlights: [
+                            '【WiFi 標配】不需像日系品牌要另外加購模組，直接內建聯網',
+                            '【電費監控】透過 ThinQ App 可隨時查看用電量，電費不再爆表',
+                            '【雙迴轉變頻】LG 獨家雙迴轉壓縮機，冷房速度快 40%，更安靜',
+                            '【UVnano】風扇內建紫外線 LED 殺菌光，吹出的風無菌更乾淨'
+                        ],
                         scripts: {
-                            intro: 'LG 這台用的是「雙迴轉變頻壓縮機」，冷得快又安靜。重點是它直接內建 WiFi，不用像別牌還要加錢買接收器。',
-                            value: '年輕人都很愛這台，回家前十分鐘用手機先開冷氣，一進家門就透心涼。外觀也是最漂亮的，像家具一樣。'
+                            intro: 'LG 這台現在年輕人指名度最高！因為它直接「內建 WiFi」，不用另外花錢買接收器。回家前手機按一下，到家馬上涼，還能看到今天吹了幾度電。',
+                            value: '它的心臟「雙迴轉壓縮機」很強，冷得快又安靜。加上 UVnano 紫外線殺菌，等於這台冷氣本身就是一台巨大的空氣清淨機，外型又是最漂亮的鏡面設計。'
                         },
                         warnings: ['保證不壞 (電子產品無絕對)', '當除濕機用 (效果有限)'],
                         catalog_url: 'https://www.lg.com/tw/support/product-support/cs-brochures/'
@@ -658,15 +677,21 @@
                         slogan: '抗沼氣 CP王', new: true, type: 'product',
                         kw_range: '2.3kW ~ 7.2kW', cspf_rating: '一級能效',
                         tech_core: '沼氣防護 2.0',
-                        tech_desc: '銅管加厚防腐蝕塗層，耐用度提升。',
+                        tech_desc: '專為台灣環境設計！抗沼氣 2.0，耐用度大升級。',
                         clean_tech: '自體防霉', smart_feature: '變頻一級',
                         features: ['高密度防護塗層', 'R32 環保冷媒', '超高 CP 值'],
+                        highlights: [
+                            '【沼氣防護 2.0】針對台灣水溝/溫泉環境，銅管加強抗腐蝕塗層',
+                            '【高 CP 值】同樣變頻一級能效，價格硬是比日系省下 5-8 千',
+                            '【芬多殺菌】(選配) 可加裝殺菌模組，經 SGS 認證有效除菌',
+                            '【藍波防鏽】室外機散熱片強化防鏽，海邊/潮濕地區首選'
+                        ],
                         scripts: {
-                            intro: '如果預算有限，或者這邊比較潮濕、有水溝味，我強力推薦禾聯這台「沼氣防護 2.0」。它銅管有特殊處理，不容易被腐蝕。',
-                            value: '這台也是一級變頻喔！該省的電都有省到，但價格便宜大牌好幾千。買這台裝在這邊最划算，壞了也不心疼。'
+                            intro: '如果您的安裝環境比較特殊，例如靠近水溝有味道，或是住北投、海邊，我唯一推薦禾聯這台「沼氣防護 2.0」。它銅管有穿防護衣，不會兩三年就破洞漏冷媒。',
+                            value: '這台是「抗通膨首選」，一樣是一級變頻省電，但價格比進口牌子便宜很多。壞了也不心疼，零件便宜維修快，是房東跟精算族的最愛。'
                         },
                         warnings: ['跟日立一樣好 (等級不同)', '保固內全免費 (有人為除外)'],
-                        catalog_url: 'https://www.heran.com.tw/catalog-download/'
+                        catalog_url: 'https://www.heran.com.tw/service/catalog-download/'
                     }
                 ],
 
